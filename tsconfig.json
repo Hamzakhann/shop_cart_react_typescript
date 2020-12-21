@@ -8,7 +8,10 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "jsx": "react",
-    "sourceMap": true
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true
+    // "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
   "include": ["./src/**/*"]
 }
