@@ -8,11 +8,13 @@ interface State {
 }
 
 class Cart extends React.Component<Props, State> {
+  #containerRef: React.RefObject<HTMLDivElement>;
   constructor(props: Props) {
     super(props);
     this.state = {
       isOpen: false,
     };
+    this.#containerRef = React.createRef();
   }
 
   handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -22,6 +24,23 @@ class Cart extends React.Component<Props, State> {
     this.setState((prev) => ({ isOpen: !prev.isOpen }));
   };
 
+  handleOutsideClick = (e: MouseEvent) => {
+    if (
+      this.#containerRef.current &&
+      !this.#containerRef.current.contains(e.target as Node)
+    ) {
+      this.setState({ isOpen: false });
+    }
+  };
+
+  componentDidMount() {
+    document.addEventListener("mousedown", this.handleOutsideClick);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("mousedown", this.handleOutsideClick);
+  }
+
   render() {
     return (
       <AppContext.Consumer>
@@ -30,7 +49,7 @@ class Cart extends React.Component<Props, State> {
             return sum + item.quantity;
           }, 0);
           return (
-            <div className={styles.cartContainer}>
+            <div className={styles.cartContainer} ref={this.#containerRef}>
               <button className={styles.button} onClick={this.handleClick}>
                 {itemsCount} Pizzas
               </button>
